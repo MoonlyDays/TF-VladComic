@@ -43,7 +43,7 @@ function App() {
     };
 
     useEffect(() => {
-        const page = parseHash(hash);
+        const page = parseHash(hash, FIRST_PAGE);
         if (page < FIRST_PAGE || page > TOTAL_PAGES) {
             gotoPageHash(currentPage);
             return;
