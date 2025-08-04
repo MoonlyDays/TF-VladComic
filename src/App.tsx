@@ -1,6 +1,4 @@
 import TF2Logo from './assets/tf_logo.png';
-import Title from './assets/title.png';
-import './index.css';
 import { useEffect, useRef, useState } from 'react';
 import { comicImageUrl, parseHash, range } from './helpers.ts';
 import { useLocation } from 'react-router-dom';
@@ -8,10 +6,14 @@ import { useKeyPress } from './useKeyPress.ts';
 import { Transition } from '@headlessui/react';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 
+import './index.css';
+import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
+
 import.meta.glob('./assets/pages/*.png');
 
 const PRELOAD_AHEAD = 4;
-const TOTAL_PAGES = 4;
+const FIRST_PAGE = 0;
+const TOTAL_PAGES = 73;
 
 function App() {
     const { hash } = useLocation();
@@ -34,7 +36,7 @@ function App() {
     };
 
     const gotoPageHash = (page: number) => {
-        if (page < 1) page = 1;
+        if (page < FIRST_PAGE) page = FIRST_PAGE;
         if (page > TOTAL_PAGES) page = TOTAL_PAGES;
 
         location.hash = `#${page}`;
@@ -42,7 +44,7 @@ function App() {
 
     useEffect(() => {
         const page = parseHash(hash);
-        if (page < 1 || page > TOTAL_PAGES) {
+        if (page < FIRST_PAGE || page > TOTAL_PAGES) {
             gotoPageHash(currentPage);
             return;
         }
@@ -83,7 +85,16 @@ function App() {
         <div className="w-full max-w-5xl">
             <div className="flex h-28 items-center justify-between">
                 <img src={TF2Logo} alt="Team Fortress 2 Logo" />
-                <img src={Title} alt="The Days Have Worn Away" />
+            </div>
+            <div className="flex justify-between p-2 font-bold text-amber-500">
+                <button className="flex items-center gap-2" onClick={prevPage}>
+                    <BiChevronLeft />
+                    Previous
+                </button>
+                <button className="flex items-center gap-2" onClick={nextPage}>
+                    Next
+                    <BiChevronRight />
+                </button>
             </div>
             <div
                 className="relative h-[86rem] w-full overflow-hidden"
