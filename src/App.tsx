@@ -134,7 +134,16 @@ function App() {
                     </>
                 )}
             </div>
-
+            <div className="flex justify-between p-2 font-bold text-amber-500">
+                <button className="flex items-center gap-2" onClick={prevPage}>
+                    <BiChevronLeft />
+                    Previous
+                </button>
+                <button className="flex items-center gap-2" onClick={nextPage}>
+                    Next
+                    <BiChevronRight />
+                </button>
+            </div>
             <div className="mb-16 mt-8 flex flex-col items-center gap-8 text-white">
                 <div className="flex h-[72px] w-[600px] items-center justify-center bg-[url(./assets/infobar.png)] font-sans text-xl">
                     Жмите на картинку или на пробел для перехода дальше
