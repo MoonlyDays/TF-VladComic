@@ -23,7 +23,7 @@ function App() {
     const [loadingVisible, setLoadingVisible] = useState(false);
     const [imageLoading, setImageLoading] = useState(false);
 
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(FIRST_PAGE);
     const [currentImageUrl, setCurrentImageUrl] = useState<string>();
     const [preloadImageUrls, setPreloadImageUrls] = useState<string[]>();
 
