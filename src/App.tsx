@@ -18,7 +18,7 @@ const TOTAL_PAGES = 73;
 function App() {
     const { hash } = useLocation();
 
-    const loadingVisibleTimeout = useRef<number>();
+    const loadingVisibleTimeout = useRef<number | undefined>(undefined);
     const [initialLoading, setInitialLoading] = useState(false);
     const [loadingVisible, setLoadingVisible] = useState(false);
     const [imageLoading, setImageLoading] = useState(false);
@@ -96,14 +96,11 @@ function App() {
                     <BiChevronRight />
                 </button>
             </div>
-            <div
-                className="relative h-[86rem] w-full overflow-hidden"
-                onClick={nextPage}
-            >
+            <div className="relative h-[86rem] w-full overflow-hidden" onClick={nextPage}>
                 {initialLoading && (
                     <>
                         <Transition show={imageLoading}>
-                            <div className="duration-400 data-closed:bg-transparent pointer-events-none absolute z-10 flex h-full w-full items-center justify-center bg-black bg-black/40 transition">
+                            <div className="pointer-events-none absolute z-10 flex h-full w-full items-center justify-center bg-black bg-black/40 transition duration-400 data-closed:bg-transparent">
                                 <AiOutlineLoading3Quarters
                                     className={
                                         'animate-spin text-6xl text-white transition-opacity ' +
@@ -144,7 +141,7 @@ function App() {
                     <BiChevronRight />
                 </button>
             </div>
-            <div className="mb-16 mt-8 flex flex-col items-center gap-8 text-white">
+            <div className="mt-8 mb-16 flex flex-col items-center gap-8 text-white">
                 <div className="flex h-[72px] w-[600px] items-center justify-center bg-[url(./assets/infobar.png)] font-sans text-xl">
                     Жмите на картинку или на пробел для перехода дальше
                 </div>
@@ -154,10 +151,9 @@ function App() {
                         <p>&copy; No Mood No Friends, 2025</p>
                         <p>&copy; Moonly Days, издание и платформа, 2025</p>
                         <p>
-                            &copy; Valve Corporation, all rights reserved.
-                            Valve, the Valve logo, Steam, the Steam logo, Team
-                            Fortress, the Team Fortress logo are trademarks
-                            and/or registered trademarks of Valve Corporation.
+                            &copy; Valve Corporation, all rights reserved. Valve, the Valve logo,
+                            Steam, the Steam logo, Team Fortress, the Team Fortress logo are
+                            trademarks and/or registered trademarks of Valve Corporation.
                         </p>
                     </div>
                 </div>

@@ -1,6 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@theme {
+    --width-reader: 1024px;
+    --height-reader: 768px;
+    --max-width-reader: 1024px;
+    --color-background: #161514;
+}
 
 body {
     background: #161514 url(assets/main_bg.jpg) no-repeat center top;

@@ -1,13 +1,9 @@
 export function comicImageUrl(page: number) {
-    return (
-        comicImageWithExtension(page, 'png') ||
-        comicImageWithExtension(page, 'jpg')
-    );
+    return comicImageWithExtension(page, 'png') || comicImageWithExtension(page, 'jpg');
 }
 
 function comicImageWithExtension(page: number, extension: string) {
-    const href = new URL(`./assets/pages/${page}.${extension}`, import.meta.url)
-        .href;
+    const href = new URL(`./assets/pages/${page}.${extension}`, import.meta.url).href;
     return href.endsWith('/undefined') ? undefined : href;
 }
 
