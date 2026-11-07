@@ -1,165 +1,75 @@
-import TF2Logo from './assets/tf_logo.png';
-import { useEffect, useRef, useState } from 'react';
-import { comicImageUrl, parseHash, range } from './helpers.ts';
-import { useLocation } from 'react-router-dom';
-import { useKeyPress } from './useKeyPress.ts';
-import { Transition } from '@headlessui/react';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
-
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './index.css';
-import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
+import { Panel, Screen, buttonClass, secondaryButtonClass } from './components/Panel.tsx';
+import { CREDITS_VIDEO, INTRO_VIDEO } from './media.ts';
+import { ComicReader } from './stages/ComicReader.tsx';
+import { LanguageSelect } from './stages/LanguageSelect.tsx';
+import { PasswordGate } from './stages/PasswordGate.tsx';
+import { VideoStage } from './stages/VideoStage.tsx';
 
-import.meta.glob('./assets/pages/*.png');
-
-const PRELOAD_AHEAD = 4;
-const FIRST_PAGE = 0;
-const TOTAL_PAGES = 73;
+type Stage = 'password' | 'language' | 'intro' | 'comic' | 'credits' | 'end';
 
 function App() {
-    const { hash } = useLocation();
+    const [stage, setStage] = useState<Stage>('password');
+    const navigate = useNavigate();
 
-    const loadingVisibleTimeout = useRef<number | undefined>(undefined);
-    const [initialLoading, setInitialLoading] = useState(false);
-    const [loadingVisible, setLoadingVisible] = useState(false);
-    const [imageLoading, setImageLoading] = useState(false);
-
-    const [currentPage, setCurrentPage] = useState(FIRST_PAGE);
-    const [currentImageUrl, setCurrentImageUrl] = useState<string>();
-    const [preloadImageUrls, setPreloadImageUrls] = useState<string[]>();
-
-    const nextPage = () => {
-        gotoPageHash(currentPage + 1);
+    const startComic = () => {
+        navigate({ hash: '' }, { replace: true });
+        setStage('comic');
     };
 
-    const prevPage = () => {
-        gotoPageHash(currentPage - 1);
-    };
+    switch (stage) {
+        case 'password':
+            return <PasswordGate onUnlock={() => setStage('language')} />;
 
-    const gotoPageHash = (page: number) => {
-        if (page < FIRST_PAGE) page = FIRST_PAGE;
-        if (page > TOTAL_PAGES) page = TOTAL_PAGES;
+        case 'language':
+            return <LanguageSelect onSelect={() => setStage('intro')} />;
 
-        location.hash = `#${page}`;
-    };
+        case 'intro':
+            return (
+                <VideoStage
+                    src={INTRO_VIDEO}
+                    placeholder="Здесь будет поздравительный ролик"
+                    onDone={startComic}
+                />
+            );
 
-    useEffect(() => {
-        const page = parseHash(hash, FIRST_PAGE);
-        if (page < FIRST_PAGE || page > TOTAL_PAGES) {
-            gotoPageHash(currentPage);
-            return;
-        }
+        case 'comic':
+            return <ComicReader onFinish={() => setStage('credits')} />;
 
-        setCurrentPage(page);
-        setInitialLoading(true);
-    }, [hash]);
+        case 'credits':
+            return (
+                <VideoStage
+                    src={CREDITS_VIDEO}
+                    placeholder="Здесь будут заключительные титры"
+                    onDone={() => setStage('end')}
+                />
+            );
 
-    useEffect(() => {
-        setImageLoading(true);
-        setLoadingVisible(false);
-
-        loadingVisibleTimeout.current = setTimeout(() => {
-            setLoadingVisible(true);
-        }, 500);
-
-        setCurrentImageUrl(comicImageUrl(currentPage));
-        const preloadImages = range(0, PRELOAD_AHEAD)
-            .map((n) => comicImageUrl(currentPage + n))
-            .filter((url) => url !== undefined) as string[];
-        setPreloadImageUrls(preloadImages);
-    }, [currentPage]);
-
-    const handleLoaded = () => {
-        setImageLoading(false);
-        setLoadingVisible(false);
-
-        if (loadingVisibleTimeout.current) {
-            clearInterval(loadingVisibleTimeout.current);
-            loadingVisibleTimeout.current = undefined;
-        }
-    };
-
-    useKeyPress(nextPage, [' ', 'ArrowRight', 'Enter']);
-    useKeyPress(prevPage, ['ArrowLeft']);
-
-    return (
-        <div className="w-full max-w-5xl">
-            <div className="flex h-28 items-center justify-between">
-                <img src={TF2Logo} alt="Team Fortress 2 Logo" />
-            </div>
-            <div className="flex justify-between p-2 font-bold text-amber-500">
-                <button className="flex items-center gap-2" onClick={prevPage}>
-                    <BiChevronLeft />
-                    Previous
-                </button>
-                <button className="flex items-center gap-2" onClick={nextPage}>
-                    Next
-                    <BiChevronRight />
-                </button>
-            </div>
-            <div className="relative h-[86rem] w-full overflow-hidden" onClick={nextPage}>
-                {initialLoading && (
-                    <>
-                        <Transition show={imageLoading}>
-                            <div className="pointer-events-none absolute z-10 flex h-full w-full items-center justify-center bg-black bg-black/40 transition duration-400 data-closed:bg-transparent">
-                                <AiOutlineLoading3Quarters
-                                    className={
-                                        'animate-spin text-6xl text-white transition-opacity ' +
-                                        (loadingVisible ? '' : 'opacity-0')
-                                    }
-                                />
-                            </div>
-                        </Transition>
-
-                        {currentImageUrl && (
-                            <img
-                                onLoad={handleLoaded}
-                                className="h-full w-full cursor-pointer object-contain"
-                                alt="Comic Reader"
-                                src={currentImageUrl}
-                            />
-                        )}
-
-                        {preloadImageUrls &&
-                            preloadImageUrls.map((url, index) => (
-                                <img
-                                    key={index}
-                                    alt="Hidden Preload"
-                                    className="h-0 w-0"
-                                    src={url}
-                                />
-                            ))}
-                    </>
-                )}
-            </div>
-            <div className="flex justify-between p-2 font-bold text-amber-500">
-                <button className="flex items-center gap-2" onClick={prevPage}>
-                    <BiChevronLeft />
-                    Previous
-                </button>
-                <button className="flex items-center gap-2" onClick={nextPage}>
-                    Next
-                    <BiChevronRight />
-                </button>
-            </div>
-            <div className="mt-8 mb-16 flex flex-col items-center gap-8 text-white">
-                <div className="flex h-[72px] w-[600px] items-center justify-center bg-[url(./assets/infobar.png)] font-sans text-xl">
-                    Жмите на картинку или на пробел для перехода дальше
-                </div>
-
-                <div className="flex flex-col gap-4 text-center">
-                    <div className="text-gray-400">
-                        <p>&copy; No Mood No Friends, 2025</p>
-                        <p>&copy; Moonly Days, издание и платформа, 2025</p>
-                        <p>
-                            &copy; Valve Corporation, all rights reserved. Valve, the Valve logo,
-                            Steam, the Steam logo, Team Fortress, the Team Fortress logo are
-                            trademarks and/or registered trademarks of Valve Corporation.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+        case 'end':
+            return (
+                <Screen>
+                    <Panel className="flex w-[480px] flex-col items-center gap-6 text-center">
+                        <h1 className="text-3xl font-bold tracking-wide text-amber-500 uppercase">
+                            Конец
+                        </h1>
+                        <div className="flex gap-4">
+                            <button type="button" className={buttonClass} onClick={startComic}>
+                                Перечитать
+                            </button>
+                            <button
+                                type="button"
+                                className={secondaryButtonClass}
+                                onClick={() => setStage('language')}
+                            >
+                                С начала
+                            </button>
+                        </div>
+                    </Panel>
+                </Screen>
+            );
+    }
 }
 
 export default App;

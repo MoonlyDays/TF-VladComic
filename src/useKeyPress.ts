@@ -1,20 +1,23 @@
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 
-export const useKeyPress = (callback: (T?: unknown) => void, keys: string[]) => {
-    const onKeyDown = (event: KeyboardEvent) => {
-        const wasAnyKeyPressed = keys.some((key) => event.key === key);
+export const useKeyPress = (callback: () => void, keys: string[]) => {
+    const callbackRef = useRef(callback);
+    const keysRef = useRef(keys);
 
-        if (wasAnyKeyPressed) {
-            event.preventDefault();
-            callback();
-        }
-    };
+    useLayoutEffect(() => {
+        callbackRef.current = callback;
+        keysRef.current = keys;
+    });
 
     useEffect(() => {
-        document.addEventListener('keydown', onKeyDown);
-
-        return () => {
-            document.removeEventListener('keydown', onKeyDown);
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (keysRef.current.includes(event.key)) {
+                event.preventDefault();
+                callbackRef.current();
+            }
         };
-    }, [onKeyDown]);
+
+        document.addEventListener('keydown', onKeyDown);
+        return () => document.removeEventListener('keydown', onKeyDown);
+    }, []);
 };

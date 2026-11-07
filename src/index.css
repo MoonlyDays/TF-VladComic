@@ -5,6 +5,59 @@
     --height-reader: 768px;
     --max-width-reader: 1024px;
     --color-background: #161514;
+
+    --animate-shake: shake 0.4s ease-in-out;
+    --animate-screamer: screamer 0.18s ease-out forwards;
+    --animate-jitter: jitter 0.08s linear infinite;
+    --animate-flash: flash 0.16s steps(1) infinite;
+
+    @keyframes shake {
+        0%,
+        100% {
+            transform: translateX(0);
+        }
+        20%,
+        60% {
+            transform: translateX(-10px);
+        }
+        40%,
+        80% {
+            transform: translateX(10px);
+        }
+    }
+
+    @keyframes screamer {
+        from {
+            transform: scale(0.2);
+        }
+        to {
+            transform: scale(1.15);
+        }
+    }
+
+    @keyframes jitter {
+        0% {
+            transform: translate(0, 0) rotate(0);
+        }
+        25% {
+            transform: translate(-12px, 8px) rotate(-2deg);
+        }
+        50% {
+            transform: translate(10px, -10px) rotate(2deg);
+        }
+        75% {
+            transform: translate(-8px, -6px) rotate(-1deg);
+        }
+    }
+
+    @keyframes flash {
+        0% {
+            background-color: #000;
+        }
+        50% {
+            background-color: #b00000;
+        }
+    }
 }
 
 body {

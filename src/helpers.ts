@@ -1,20 +1,10 @@
-export function comicImageUrl(page: number) {
-    return comicImageWithExtension(page, 'png') || comicImageWithExtension(page, 'jpg');
+/** Номер страницы из `#12`, либо `fallback`, если хэш пустой или кривой. */
+export function parseHash(hash: string, fallback: number): number {
+    if (hash === '' || hash === '#') return fallback;
+    const page = Number(hash.slice(1));
+    return Number.isInteger(page) ? page : fallback;
 }
 
-function comicImageWithExtension(page: number, extension: string) {
-    const href = new URL(`./assets/pages/${page}.${extension}`, import.meta.url).href;
-    return href.endsWith('/undefined') ? undefined : href;
-}
-
-export function parseHash(hash: string, defaultPage: number): number {
-    return hash !== '' ? Number(hash.slice(1)) : defaultPage;
-}
-
-export function range(from: number, to: number) {
-    const out = [];
-    for (let i = from; i < to; i++) {
-        out.push(i);
-    }
-    return out;
+export function clamp(value: number, min: number, max: number) {
+    return Math.min(Math.max(value, min), max);
 }
