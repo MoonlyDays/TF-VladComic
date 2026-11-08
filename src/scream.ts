@@ -1,14 +1,25 @@
 import Sound from './assets/Screamer_Sound.wav';
 
+/** Звук грузим заранее, при загрузке модуля, чтобы скример не ждал сети. */
+const preloadedAudio: HTMLAudioElement | null = Sound ? createPreloadedAudio(Sound) : null;
+
+function createPreloadedAudio(src: string) {
+    const audio = new Audio();
+    audio.preload = 'auto';
+    audio.volume = 1;
+    audio.src = src;
+    audio.load();
+    return audio;
+}
+
 /**
  * Проигрывает звук скримера. Вызывать прямо из обработчика клика:
  * браузеры разрешают звук только в ответ на действие пользователя.
  */
 export function playScream() {
-    if (Sound) {
-        const audio = new Audio(Sound);
-        audio.volume = 1;
-        audio.play().catch(synthScream);
+    if (preloadedAudio) {
+        preloadedAudio.currentTime = 0;
+        preloadedAudio.play().catch(synthScream);
         return;
     }
     synthScream();
