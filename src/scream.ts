@@ -1,12 +1,12 @@
-import { SCREAMER_SOUND } from './media.ts';
+import Sound from './assets/Screamer_Sound.wav';
 
 /**
  * Проигрывает звук скримера. Вызывать прямо из обработчика клика:
  * браузеры разрешают звук только в ответ на действие пользователя.
  */
 export function playScream() {
-    if (SCREAMER_SOUND) {
-        const audio = new Audio(SCREAMER_SOUND);
+    if (Sound) {
+        const audio = new Audio(Sound);
         audio.volume = 1;
         audio.play().catch(synthScream);
         return;

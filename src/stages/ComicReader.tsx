@@ -78,7 +78,7 @@ export function ComicReader({ onFinish }: { onFinish: () => void }) {
 
             {navigation}
 
-            <div className="relative h-[86rem] w-full overflow-hidden" onClick={nextPage}>
+            <div className="relative aspect-[2000/1567] max-h-[80vh] w-full overflow-hidden" onClick={nextPage}>
                 {imageUrl ? (
                     <>
                         <Transition show={loading}>
@@ -114,20 +114,8 @@ export function ComicReader({ onFinish }: { onFinish: () => void }) {
             {navigation}
 
             <div className="mt-8 mb-16 flex flex-col items-center gap-8 text-white">
-                <div className="flex h-[72px] w-[600px] items-center justify-center bg-[url(./assets/infobar.png)] font-sans text-xl">
+                <div className="flex h-18 w-150 items-center justify-center bg-[url(./assets/infobar.png)] font-sans text-xl">
                     Жмите на картинку или на пробел для перехода дальше
-                </div>
-
-                <div className="flex flex-col gap-4 text-center">
-                    <div className="text-gray-400">
-                        <p>&copy; No Mood No Friends, 2025</p>
-                        <p>&copy; Moonly Days, издание и платформа, 2025</p>
-                        <p>
-                            &copy; Valve Corporation, all rights reserved. Valve, the Valve logo,
-                            Steam, the Steam logo, Team Fortress, the Team Fortress logo are
-                            trademarks and/or registered trademarks of Valve Corporation.
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>

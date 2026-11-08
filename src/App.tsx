@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './index.css';
-import { Panel, Screen, buttonClass, secondaryButtonClass } from './components/Panel.tsx';
+import { buttonClass, Panel, Screen, secondaryButtonClass } from './components/Panel.tsx';
 import { CREDITS_VIDEO, INTRO_VIDEO } from './media.ts';
 import { ComicReader } from './stages/ComicReader.tsx';
+import { Gallery } from './stages/Gallery.tsx';
 import { LanguageSelect } from './stages/LanguageSelect.tsx';
 import { PasswordGate } from './stages/PasswordGate.tsx';
 import { VideoStage } from './stages/VideoStage.tsx';
 
-type Stage = 'password' | 'language' | 'intro' | 'comic' | 'credits' | 'end';
+type Stage = 'password' | 'language' | 'intro' | 'comic' | 'gallery' | 'credits' | 'end';
 
 function App() {
     const [stage, setStage] = useState<Stage>('password');
@@ -21,10 +22,10 @@ function App() {
 
     switch (stage) {
         case 'password':
-            return <PasswordGate onUnlock={() => setStage('language')} />;
+            return <PasswordGate onUnlock={() => setStage('language')}/>;
 
         case 'language':
-            return <LanguageSelect onSelect={() => setStage('intro')} />;
+            return <LanguageSelect onSelect={() => setStage('intro')}/>;
 
         case 'intro':
             return (
@@ -36,7 +37,10 @@ function App() {
             );
 
         case 'comic':
-            return <ComicReader onFinish={() => setStage('credits')} />;
+            return <ComicReader onFinish={() => setStage('gallery')}/>;
+
+        case 'gallery':
+            return <Gallery onDone={() => setStage('credits')}/>;
 
         case 'credits':
             return (
@@ -50,7 +54,7 @@ function App() {
         case 'end':
             return (
                 <Screen>
-                    <Panel className="flex w-[480px] flex-col items-center gap-6 text-center">
+                    <Panel className="flex w-120 flex-col items-center gap-6 text-center">
                         <h1 className="text-3xl font-bold tracking-wide text-amber-500 uppercase">
                             Конец
                         </h1>

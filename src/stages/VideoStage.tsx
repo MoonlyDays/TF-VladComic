@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { resolveVideo } from '../preload.ts';
 import { Panel, Screen, buttonClass, secondaryButtonClass } from '../components/Panel.tsx';
 
 type VideoStageProps = {
@@ -7,7 +9,11 @@ type VideoStageProps = {
     onDone: () => void;
 };
 
-export function VideoStage({ src, placeholder, onDone }: VideoStageProps) {
+export function VideoStage({ src: originalSrc, placeholder, onDone }: VideoStageProps) {
+    // Берём blob-URL, если ролик уже предзагружен; фиксируем на время показа,
+    // чтобы не подменять источник посреди воспроизведения.
+    const [src] = useState(() => resolveVideo(originalSrc));
+
     if (!src) {
         return (
             <Screen>
